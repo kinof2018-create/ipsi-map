@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>딸아이 대입·진로 전략 지도 | 수원시청역 거점</title>
+<style>
+  :root{
+    --line-suin:#F5A200;   /* 수인분당선 */
+    --line-sinbundang:#D4003B; /* 신분당선 */
+    --line-1:#0052A4;      /* 1호선 */
+    --line-2:#00A84D;      /* 2호선 */
+    --line-3:#EF7C1C;      /* 3호선 */
+    --line-4:#00A5DE;      /* 4호선 */
+    --line-5:#996CAC;      /* 5호선 */
+    --line-6:#CD7C2F;      /* 6호선 */
+    --line-7:#747F00;      /* 7호선 */
+    --line-9:#BDB092;      /* 9호선 */
+    --line-gyeongui:#77C4A3; /* 경의중앙선 */
+
+    --career:#8b93a7;
+
+    /* Dark theme (default) */
+    --bg:#0e1118;
+    --bg-soft:#161b26;
+    --panel:#1b2130;
+    --panel-2:#212a3b;
+    --border:#2c3546;
+    --text:#eef2f9;
+    --text-dim:#9aa6bd;
+    --text-faint:#6b7689;
+    --accent:#5b8cff;
+    --shadow:0 10px 40px rgba(0,0,0,.45);
+    --node-uni:#232c40;
+    --node-corp:#2a2136;
+    --node-hub:#3a2a0e;
+  }
+  html[data-theme="light"]{
+    --bg:#eef1f6;
+    --bg-soft:#e3e8f0;
+    --panel:#ffffff;
+    --panel-2:#f4f6fb;
+    --border:#d7deea;
+    --text:#1a2230;
+    --text-dim:#556279;
+    --text-faint:#8a95a8;
+    --accent:#2f6bff;
+    --shadow:0 10px 30px rgba(40,60,110,.12);
+    --node-uni:#eef3ff;
+    --node-corp:#f6effc;
+    --node-hub:#fff5e0;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,-apple-system,sans-serif;
+    background:radial-gradient(1200px 700px at 15% -10%, var(--bg-soft), var(--bg)) fixed;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+
+  .app{display:flex;flex-direction:column;height:100vh;}
+
+  /* ---------- Header ---------- */
+  header.top{
+    display:flex;align-items:center;gap:16px;
+    padding:14px 22px;border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg,var(--panel),transparent);
+    backdrop-filter:blur(6px);
+    z-index:20;flex-shrink:0;
+  }
+  .brand{display:flex;flex-direction:column;line-height:1.2;}
+  .brand .t{font-size:19px;font-weight:800;letter-spacing:-.02em;}
+  .brand .s{font-size:12px;color:var(--text-dim);margin-top:3px;}
+  .brand .s b{color:var(--line-suin);}
+  .top-spacer{flex:1;}
+  .toggle{
+    display:flex;align-items:center;gap:8px;background:var(--panel-2);
+    border:1px solid var(--border);border-radius:999px;padding:7px 14px;
+    cursor:pointer;font-size:13px;color:var(--text-dim);font-weight:600;
+    transition:.2s;
+  }
+  .toggle:hover{color:var(--text);border-color:var(--accent);}
+
+  /* ---------- Body layout ---------- */
+  .body{display:flex;flex:1;min-height:0;}
+
+  /* ---------- Left sidebar ---------- */
+  aside.left{
+    width:310px;flex-shrink:0;border-right:1px solid var(--border);
+    background:var(--panel);overflow-y:auto;padding:18px 16px 40px;
+  }
+  .sec-title{
+    font-size:11px;font-weight:800;letter-spacing:.09em;color:var(--text-faint);
+    text-transform:uppercase;margin:6px 4px 12px;
+  }
+  .hub-card{
+    background:linear-gradient(135deg,var(--node-hub),var(--panel-2));
+    border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:18px;
+    position:relative;overflow:hidden;
+  }
+  .hub-card::before{content:"";position:absolute;inset:0;border-radius:16px;
+    box-shadow:inset 0 0 0 1px rgba(245,162,0,.25);pointer-events:none;}
+  .hub-card .pin{font-size:12px;color:var(--line-suin);font-weight:800;letter-spacing:.04em;}
+  .hub-card .name{font-size:22px;font-weight:800;margin:4px 0 2px;}
+  .hub-card .desc{font-size:12px;color:var(--text-dim);}
+
+  .route-card{
+    background:var(--panel-2);border:1px solid var(--border);border-radius:12px;
+    padding:11px 12px;margin-bottom:9px;cursor:pointer;transition:.16s;
+    display:flex;align-items:center;gap:11px;
+  }
+  .route-card:hover{transform:translateX(3px);border-color:var(--accent);}
+  .route-card .dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(255,255,255,.05);}
+  .route-card .info{flex:1;min-width:0;}
+  .route-card .info .l1{font-size:13.5px;font-weight:700;}
+  .route-card .info .l2{font-size:11px;color:var(--text-dim);margin-top:1px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .route-card .time{font-size:12px;font-weight:800;color:var(--text);
+    background:var(--bg-soft);border-radius:8px;padding:3px 8px;flex-shrink:0;}
+
+  .legend{margin-top:20px;}
+  .legend .row{display:flex;align-items:center;gap:8px;font-size:11.5px;
+    color:var(--text-dim);margin-bottom:7px;}
+  .legend .bar{width:20px;height:4px;border-radius:2px;flex-shrink:0;}
+  .legend .cbar{width:20px;height:0;border-top:2px dashed var(--career);flex-shrink:0;}
+
+  /* ---------- Center map ---------- */
+  main.map{flex:1;min-width:0;position:relative;overflow:hidden;background:
+    radial-gradient(700px 500px at 70% 20%, rgba(91,140,255,.06), transparent);}
+  .map-scroll{position:absolute;inset:0;overflow:auto;}
+  svg#net{display:block;width:100%;height:auto;}
+  .col-label{font-size:12px;font-weight:800;fill:var(--text-faint);
+    letter-spacing:.08em;text-transform:uppercase;}
+
+  .node{cursor:pointer;}
+  .node rect,.node .nbg{transition:.18s;}
+  .hub-bg{fill:var(--node-hub);}
+  .uni-bg{fill:var(--node-uni);}
+  .corp-bg{fill:var(--node-corp);}
+  .node:hover .nbg{filter:brightness(1.12);}
+  .node text{pointer-events:none;}
+  .node .n-title{font-weight:800;fill:var(--text);}
+  .node .n-sub{fill:var(--text-dim);font-weight:600;}
+  .node .n-tag{font-weight:800;}
+  .node.dim{opacity:.28;}
+  .node.active .nbg{stroke-width:2.5px;}
+  .link{fill:none;transition:.2s;}
+  .link.hl{stroke-width:4px;}
+  .link.dim{opacity:.08;}
+  .tierbadge{font-size:9.5px;font-weight:800;}
+
+  /* ---------- Right detail ---------- */
+  aside.right{
+    width:0;flex-shrink:0;background:var(--panel);border-left:1px solid var(--border);
+    overflow:hidden;transition:width .32s cubic-bezier(.4,0,.2,1);
+  }
+  aside.right.open{width:360px;}
+  .detail{width:360px;height:100%;overflow-y:auto;padding:22px 20px 40px;}
+  .detail .close{float:right;font-size:20px;color:var(--text-faint);cursor:pointer;
+    line-height:1;background:none;border:none;padding:4px;}
+  .detail .close:hover{color:var(--text);}
+  .d-tier{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.05em;
+    padding:4px 10px;border-radius:999px;margin-bottom:10px;}
+  .d-name{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15;}
+  .d-loc{font-size:13px;color:var(--text-dim);margin-top:6px;display:flex;
+    align-items:center;gap:7px;flex-wrap:wrap;}
+  .d-block{margin-top:22px;}
+  .d-block h4{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--text-faint);
+    text-transform:uppercase;margin:0 0 10px;}
+  .route-line{background:var(--panel-2);border:1px solid var(--border);border-radius:12px;
+    padding:13px 14px;font-size:13px;line-height:1.7;color:var(--text);}
+  .route-line .via{color:var(--text-dim);}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{font-size:12px;font-weight:700;padding:6px 11px;border-radius:9px;
+    background:var(--panel-2);border:1px solid var(--border);}
+  .chip.major{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,var(--border));}
+  .corp-item{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-radius:12px;
+    background:var(--panel-2);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;transition:.15s;}
+  .corp-item:hover{border-color:var(--accent);transform:translateX(2px);}
+  .corp-item .cdot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+  .corp-item .cinfo .cn{font-size:13.5px;font-weight:800;}
+  .corp-item .cinfo .cc{font-size:11.5px;color:var(--text-dim);margin-top:2px;line-height:1.5;}
+  .timepill{font-size:12px;font-weight:800;background:var(--bg-soft);border-radius:8px;
+    padding:3px 9px;color:var(--text);}
+
+  .hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    font-size:12px;color:var(--text-faint);background:var(--panel);border:1px solid var(--border);
+    padding:7px 16px;border-radius:999px;box-shadow:var(--shadow);pointer-events:none;
+    transition:.3s;}
+  .hint.hide{opacity:0;transform:translate(-50%,10px);}
+
+  /* scrollbars */
+  aside.left::-webkit-scrollbar,.detail::-webkit-scrollbar,.map-scroll::-webkit-scrollbar{width:9px;height:9px;}
+  aside.left::-webkit-scrollbar-thumb,.detail::-webkit-scrollbar-thumb,.map-scroll::-webkit-scrollbar-thumb{
+    background:var(--border);border-radius:9px;}
+
+  @media(max-width:1100px){
+    aside.left{width:250px;}
+    aside.right.open{width:320px;}
+  }
+  @media(max-width:820px){
+    .body{flex-direction:column;}
+    aside.left{width:100%;height:auto;max-height:230px;border-right:none;border-bottom:1px solid var(--border);}
+    aside.right{position:fixed;top:0;right:0;height:100%;z-index:50;box-shadow:var(--shadow);}
+    aside.right.open{width:min(360px,90vw);}
+    main.map{min-height:340px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="t">🎓 딸아이 대입·진로 전략 지도</div>
+      <div class="s">거주 거점 · <b>[수인분당선] 수원시청역</b> 중심 &nbsp;|&nbsp; 국문·어문·문예창작·문화콘텐츠·미디어·심리 계열</div>
+    </div>
+    <div class="top-spacer"></div>
+    <div class="toggle" id="themeToggle"><span id="themeIcon">☀️</span><span id="themeLabel">라이트 모드</span></div>
+  </header>
+
+  <div class="body">
+    <!-- LEFT -->
+    <aside class="left">
+      <div class="hub-card">
+        <div class="pin">◍ RESIDENCE HUB · 출발 거점</div>
+        <div class="name">수원시청역</div>
+        <div class="desc">수인분당선 · 모든 이동 동선의 시작점</div>
+      </div>
+
+      <div class="sec-title">노선별 이동 요약 · 클릭 시 지도 강조</div>
+      <div id="routeCards"></div>
+
+      <div class="legend">
+        <div class="sec-title" style="margin-top:22px;">노선 색상 범례</div>
+        <div class="row"><span class="bar" style="background:var(--line-suin)"></span>수인분당선 (거점 노선)</div>
+        <div class="row"><span class="bar" style="background:var(--line-sinbundang)"></span>신분당선 (판교·강남·광교)</div>
+        <div class="row"><span class="bar" style="background:var(--line-2)"></span>2호선 (건국대·강남)</div>
+        <div class="row"><span class="bar" style="background:var(--line-3)"></span>3호선 (동국대·광화문)</div>
+        <div class="row"><span class="bar" style="background:var(--line-4)"></span>4호선 (숙명여대)</div>
+        <div class="row"><span class="bar" style="background:var(--line-1)"></span>1호선 (경희대·외대)</div>
+        <div class="row"><span class="bar" style="background:var(--line-9)"></span>9호선 (중앙대)</div>
+        <div class="row"><span class="bar" style="background:var(--line-6)"></span>6호선 (동덕여대)</div>
+        <div class="row"><span class="cbar"></span>진로 경로 (대학 → 기업)</div>
+      </div>
+    </aside>
+
+    <!-- CENTER -->
+    <main class="map">
+      <div class="map-scroll">
+        <svg id="net" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="hint" id="hint">💡 대학 노드를 클릭하면 학과·경로·추천 기업이 표시됩니다</div>
+    </main>
+
+    <!-- RIGHT -->
+    <aside class="right" id="rightPanel">
+      <div class="detail" id="detail"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ============ DATA ============ */
+const LINE = {
+  suin:{c:'var(--line-suin)',n:'수인분당선'},
+  sinbundang:{c:'var(--line-sinbundang)',n:'신분당선'},
+  l1:{c:'var(--line-1)',n:'1호선'}, l2:{c:'var(--line-2)',n:'2호선'},
+  l3:{c:'var(--line-3)',n:'3호선'}, l4:{c:'var(--line-4)',n:'4호선'},
+  l5:{c:'var(--line-5)',n:'5호선'}, l6:{c:'var(--line-6)',n:'6호선'},
+  l7:{c:'var(--line-7)',n:'7호선'}, l9:{c:'var(--line-9)',n:'9호선'},
+  gyeongui:{c:'var(--line-gyeongui)',n:'경의중앙선'}
+};
+
+/* 환승/연결 거점 (수인분당선 상의 분기점) */
+const TRANSFERS = [
+  {id:'direct', name:'수인분당선 직통', sub:'환승 없음', line:'suin'},
+  {id:'jeongja', name:'미금·정자역', sub:'수인분당 ↔ 신분당', line:'sinbundang'},
+  {id:'seolleung', name:'선릉역', sub:'수인분당 ↔ 2호선', line:'l2'},
+  {id:'oksu', name:'옥수역', sub:'수인분당 ↔ 3호선', line:'l3'},
+  {id:'ichon', name:'이촌역', sub:'수인분당 ↔ 4호선', line:'l4'},
+  {id:'seonjeongneung', name:'선정릉역', sub:'수인분당 ↔ 9호선', line:'l9'},
+  {id:'wangsimni', name:'왕십리역', sub:'수인분당 ↔ 2·5·경의중앙', line:'gyeongui'}
+];
+
+/* 기업 클러스터 */
+const CORPS = {
+  pangyo:{id:'pangyo', name:'판교 테크노밸리', line:'sinbundang', station:'신분당/경강선 판교역',
+    companies:'카카오엔터테인먼트 · 네이버웹툰 · 넥슨 · 엔씨소프트 · 스마일게이트', field:'웹툰·게임 스토리·IP·콘텐츠'},
+  dmc:{id:'dmc', name:'상암 DMC & 마포', line:'l6', station:'6호선·공항철도·경의중앙 DMC / 합정',
+    companies:'CJ ENM · JTBC · MBC · 문학동네 · 민음사 · 창비', field:'방송·영상·출판·미디어'},
+  gangnam:{id:'gangnam', name:'강남 업무지구(GBD)', line:'sinbundang', station:'2·신분당 강남역 · 테헤란로',
+    companies:'제일기획 · HSAd · 하이브 · SM · 대형 광고/마케팅', field:'광고·마케팅·엔터·브랜딩'},
+  cbd:{id:'cbd', name:'광화문·을지로(CBD)', line:'l3', station:'1·3·5 광화문/시청/종로',
+    companies:'조선·중앙·동아일보 · 대기업 본사 홍보실', field:'언론·저널리즘·기업 커뮤니케이션'}
+};
+
+/* 대학 */
+const UNIS = [
+  {id:'dongguk', name:'동국대학교', region:'서울', tier:'상위권', transfer:'oksu', line:'l3',
+   station:'3호선 동대입구역', via:'수원시청 → (수인분당선) → 옥수 환승 → (3호선) → 동대입구', time:'약 70분',
+   majors:['국어국문·문예창작','미디어커뮤니케이션','영화영상'], corps:['dmc','pangyo','gangnam']},
+  {id:'konkuk', name:'건국대학교', region:'서울', tier:'상위권', transfer:'seolleung', line:'l2',
+   station:'2·7호선 건대입구역', via:'수원시청 → (수인분당선) → 선릉 환승 → (2호선) → 건대입구', time:'약 65분',
+   majors:['국어국문','문화콘텐츠·미디어','영상영화'], corps:['pangyo','gangnam','dmc']},
+  {id:'sookmyung', name:'숙명여자대학교', region:'서울', tier:'상위권', transfer:'ichon', line:'l4',
+   station:'4호선 숙대입구역 / 1호선 남영역', via:'수원시청 → (수인분당선) → 이촌 환승 → (4호선) → 숙대입구', time:'약 70분',
+   majors:['한국어문','미디어','심리학'], corps:['gangnam','dmc','cbd']},
+  {id:'cau', name:'중앙대학교', region:'서울', tier:'상위권', transfer:'seonjeongneung', line:'l9',
+   station:'9호선 흑석역 / 7호선 상도역', via:'수원시청 → (수인분당선) → 선정릉 환승 → (9호선) → 흑석', time:'약 70분',
+   majors:['문예창작','미디어커뮤니케이션','심리학'], corps:['dmc','gangnam','pangyo']},
+  {id:'khu', name:'경희대 · 한국외대', region:'서울', tier:'상위권', transfer:'wangsimni', line:'l1',
+   station:'1호선 회기역 / 외대앞역', via:'수원시청 → (수인분당선) → 왕십리 환승 → (경의중앙·1호선) → 회기/외대앞', time:'약 75분',
+   majors:['국문·어문계열','문화콘텐츠','미디어'], corps:['cbd','dmc','gangnam']},
+  {id:'dankook', name:'단국대학교(죽전)', region:'용인', tier:'거점·연계', transfer:'direct', line:'suin',
+   station:'수인분당선 죽전역', via:'수원시청 → (수인분당선 직통) → 죽전', time:'약 25분',
+   majors:['국어국문·문예창작','문화콘텐츠','커뮤니케이션'], corps:['pangyo','dmc']},
+  {id:'gachon', name:'가천대학교(성남)', region:'성남', tier:'거점·연계', transfer:'direct', line:'suin',
+   station:'수인분당선 가천대역', via:'수원시청 → (수인분당선 직통) → 가천대', time:'약 40분',
+   majors:['미디어커뮤니케이션','한국어문','심리학'], corps:['pangyo','gangnam']},
+  {id:'kyonggi', name:'경기대학교(수원)', region:'수원', tier:'거점·연계', transfer:'jeongja', line:'sinbundang',
+   station:'신분당선 광교(경기대)역', via:'수원시청 → (수인분당/신분당) → 광교(경기대)', time:'약 25분',
+   majors:['국어국문','문예창작','미디어영상'], corps:['pangyo','dmc','gangnam']},
+  {id:'dongduk', name:'동덕여자대학교', region:'서울', tier:'거점·연계', transfer:'wangsimni', line:'l6',
+   station:'6호선 월곡역', via:'수원시청 → (수인분당선) → 왕십리 → (환승) → 월곡', time:'약 80분',
+   majors:['국어국문·문예창작','방송연예','큐레이터'], corps:['dmc','gangnam']}
+];
+
+/* 좌측 노선 요약 카드용 */
+const ROUTE_SUMMARY = [
+  {line:'suin', label:'수인분당선 직통', sub:'단국대·가천대 (환승 없음)', time:'25~40분', focus:['direct']},
+  {line:'sinbundang', label:'신분당선 (미금·정자 환승)', sub:'경기대·판교·강남 클러스터', time:'25~35분', focus:['jeongja']},
+  {line:'l2', label:'2호선 (선릉 환승)', sub:'건국대', time:'약 65분', focus:['seolleung']},
+  {line:'l3', label:'3호선 (옥수 환승)', sub:'동국대·광화문 CBD', time:'약 70분', focus:['oksu']},
+  {line:'l4', label:'4호선 (이촌 환승)', sub:'숙명여대', time:'약 70분', focus:['ichon']},
+  {line:'l9', label:'9호선 (선정릉 환승)', sub:'중앙대', time:'약 70분', focus:['seonjeongneung']},
+  {line:'gyeongui', label:'왕십리 환승 (2·5·경의중앙)', sub:'경희대·외대·동덕여대·DMC', time:'75~80분', focus:['wangsimni']}
+];
+
+/* ============ RENDER: LEFT ROUTE CARDS ============ */
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function lineColor(k){return cssVar('--line-'+({suin:'suin',sinbundang:'sinbundang',l1:'1',l2:'2',l3:'3',l4:'4',l5:'5',l6:'6',l7:'7',l9:'9',gyeongui:'gyeongui'}[k]));}
+
+const rc = document.getElementById('routeCards');
+ROUTE_SUMMARY.forEach(r=>{
+  const el=document.createElement('div');
+  el.className='route-card';
+  el.innerHTML=`<span class="dot" style="background:${lineColor(r.line)}"></span>
+    <div class="info"><div class="l1">${r.label}</div><div class="l2">${r.sub}</div></div>
+    <div class="time">${r.time}</div>`;
+  el.onclick=()=>focusTransfer(r.focus[0]);
+  rc.appendChild(el);
+});
+
+/* ============ RENDER: SVG NETWORK ============ */
+const svg=document.getElementById('net');
+const SVGNS='http://www.w3.org/2000/svg';
+const W=1440, PAD=40;
+const COLX={hub:120, transfer:470, uni:850, corp:1250};
+let H=0;
+
+function mk(tag,attrs,parent){
+  const e=document.createElementNS(SVGNS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]);
+  if(parent) parent.appendChild(e);
+  return e;
+}
+
+/* layout y-positions */
+const uniY={}, transY={}, corpY={};
+const uTop=110, uGap=88;
+UNIS.forEach((u,i)=>uniY[u.id]=uTop+i*uGap);
+H = uTop + UNIS.length*uGap + 40;
+
+/* transfers spread across same vertical span, ordered to reduce crossings */
+const transOrder=['direct','jeongja','seolleung','oksu','ichon','seonjeongneung','wangsimni'];
+const tTop=120, tGap=(H-200)/(transOrder.length-1);
+transOrder.forEach((t,i)=>transY[t]=tTop+i*tGap);
+
+/* corps */
+const cOrder=['pangyo','dmc','gangnam','cbd'];
+const cTop=170, cGap=(H-320)/(cOrder.length-1);
+cOrder.forEach((c,i)=>corpY[c]=cTop+i*cGap);
+
+const hubY=H/2;
+svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+
+/* column labels */
+const labels=[['거주 거점',COLX.hub],['환승·연결 거점',COLX.transfer],['타깃 대학',COLX.uni],['기업 클러스터 (진로)',COLX.corp]];
+labels.forEach(([t,x])=>{
+  const el=mk('text',{x:x,y:60,'text-anchor':'middle','class':'col-label'},svg);
+  el.textContent=t;
+});
+
+/* ---- links layer first ---- */
+const linkLayer=mk('g',{},svg);
+const nodeLayer=mk('g',{},svg);
+
+function curve(x1,y1,x2,y2){
+  const mx=(x1+x2)/2;
+  return `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+}
+
+const allLinks=[];
+
+/* hub -> transfer (수인분당선) */
+TRANSFERS.forEach(t=>{
+  const p=mk('path',{d:curve(COLX.hub+70,hubY,COLX.transfer-95,transY[t.id]),
+    stroke:lineColor('suin'),'stroke-width':2.5,'stroke-opacity':.55,'class':'link',fill:'none'},linkLayer);
+  allLinks.push({el:p,type:'hub-trans',transfer:t.id});
+});
+
+/* transfer -> uni (line color) */
+UNIS.forEach(u=>{
+  const p=mk('path',{d:curve(COLX.transfer+95,transY[u.transfer],COLX.uni-115,uniY[u.id]),
+    stroke:lineColor(u.line),'stroke-width':3,'stroke-opacity':.75,'class':'link',fill:'none'},linkLayer);
+  allLinks.push({el:p,type:'trans-uni',uni:u.id,transfer:u.transfer});
+});
+
+/* uni -> corp (career, dashed) */
+UNIS.forEach(u=>{
+  u.corps.forEach(cid=>{
+    const p=mk('path',{d:curve(COLX.uni+115,uniY[u.id],COLX.corp-95,corpY[cid]),
+      stroke:cssVar('--career'),'stroke-width':1.6,'stroke-opacity':.32,'stroke-dasharray':'4 5','class':'link',fill:'none'},linkLayer);
+    allLinks.push({el:p,type:'uni-corp',uni:u.id,corp:cid});
+  });
+});
+
+/* ---- HUB node ---- */
+(function(){
+  const g=mk('g',{'class':'node'},nodeLayer);
+  mk('rect',{x:COLX.hub-72,y:hubY-30,width:144,height:60,rx:16,'class':'nbg hub-bg',
+    stroke:lineColor('suin'),'stroke-width':2},g);
+  const t1=mk('text',{x:COLX.hub,y:hubY-4,'text-anchor':'middle','class':'n-title','font-size':16},g);
+  t1.textContent='수원시청역';
+  const t2=mk('text',{x:COLX.hub,y:hubY+15,'text-anchor':'middle','class':'n-sub','font-size':11},g);
+  t2.textContent='수인분당선 · 거주 거점';
+})();
+
+/* ---- TRANSFER nodes ---- */
+const transNodes={};
+TRANSFERS.forEach(t=>{
+  const y=transY[t.id];
+  const g=mk('g',{'class':'node'},nodeLayer);
+  mk('circle',{cx:COLX.transfer,cy:y,r:7,fill:lineColor(t.line),stroke:cssVar('--bg'),'stroke-width':2},g);
+  mk('rect',{x:COLX.transfer-92,y:y-19,width:184,height:38,rx:11,'class':'nbg',fill:'transparent',stroke:'transparent'},g);
+  const t1=mk('text',{x:COLX.transfer+16,y:y-2,'class':'n-title','font-size':13},g);
+  t1.textContent=t.name;
+  const t2=mk('text',{x:COLX.transfer+16,y:y+13,'class':'n-sub','font-size':10.5},g);
+  t2.textContent=t.sub;
+  g.onclick=()=>focusTransfer(t.id);
+  transNodes[t.id]=g;
+});
+
+/* ---- UNI nodes ---- */
+const uniNodes={};
+UNIS.forEach(u=>{
+  const y=uniY[u.id];
+  const g=mk('g',{'class':'node','data-uni':u.id},nodeLayer);
+  const w=230,x=COLX.uni-w/2;
+  mk('rect',{x:x,y:y-27,width:w,height:54,rx:14,'class':'nbg uni-bg',
+    stroke:lineColor(u.line),'stroke-width':1.5},g);
+  mk('rect',{x:x,y:y-27,width:5,height:54,rx:2.5,fill:lineColor(u.line)},g);
+  const isTop=u.tier==='상위권';
+  const badge=mk('text',{x:x+w-14,y:y-11,'text-anchor':'end','class':'tierbadge',
+    fill:isTop?lineColor('sinbundang'):cssVar('--accent')},g);
+  badge.textContent=isTop?'★ 상위권':'거점·연계';
+  const t1=mk('text',{x:x+18,y:y-3,'class':'n-title','font-size':15},g);
+  t1.textContent=u.name;
+  const t2=mk('text',{x:x+18,y:y+15,'class':'n-sub','font-size':11},g);
+  t2.textContent=u.station+' · '+u.time;
+  g.onclick=()=>openUni(u.id);
+  uniNodes[u.id]=g;
+});
+
+/* ---- CORP nodes ---- */
+const corpNodes={};
+cOrder.forEach(cid=>{
+  const c=CORPS[cid], y=corpY[cid];
+  const g=mk('g',{'class':'node','data-corp':cid},nodeLayer);
+  const w=175,x=COLX.corp-w/2;
+  mk('rect',{x:x,y:y-30,width:w,height:60,rx:14,'class':'nbg corp-bg',
+    stroke:lineColor(c.line),'stroke-width':1.5},g);
+  const t1=mk('text',{x:COLX.corp,y:y-9,'text-anchor':'middle','class':'n-title','font-size':13.5},g);
+  t1.textContent=c.name;
+  const t2=mk('text',{x:COLX.corp,y:y+8,'text-anchor':'middle','class':'n-sub','font-size':9.5},g);
+  t2.textContent=c.field;
+  const t3=mk('text',{x:COLX.corp,y:y+21,'text-anchor':'middle','class':'n-tag','font-size':9,
+    fill:lineColor(c.line)},g);
+  t3.textContent='◍ '+c.station.split(' ')[0];
+  g.onclick=()=>focusCorp(cid);
+  corpNodes[cid]=g;
+});
+
+/* ============ INTERACTIONS ============ */
+function clearHL(){
+  allLinks.forEach(l=>l.el.classList.remove('hl','dim'));
+  Object.values(uniNodes).forEach(n=>n.classList.remove('dim','active'));
+  Object.values(corpNodes).forEach(n=>n.classList.remove('dim','active'));
+  Object.values(transNodes).forEach(n=>n.classList.remove('dim','active'));
+}
+function hideHint(){document.getElementById('hint').classList.add('hide');}
+
+function focusTransfer(tid){
+  hideHint();clearHL();
+  transNodes[tid].classList.add('active');
+  const relUnis=UNIS.filter(u=>u.transfer===tid).map(u=>u.id);
+  allLinks.forEach(l=>{
+    if((l.type==='hub-trans'&&l.transfer===tid)||(l.type==='trans-uni'&&l.transfer===tid)) l.el.classList.add('hl');
+    else l.el.classList.add('dim');
+  });
+  Object.entries(uniNodes).forEach(([id,n])=>{if(!relUnis.includes(id))n.classList.add('dim');else n.classList.add('active');});
+  Object.values(corpNodes).forEach(n=>n.classList.add('dim'));
+}
+
+function focusCorp(cid){
+  hideHint();clearHL();
+  corpNodes[cid].classList.add('active');
+  const relUnis=UNIS.filter(u=>u.corps.includes(cid)).map(u=>u.id);
+  allLinks.forEach(l=>{
+    if(l.type==='uni-corp'&&l.corp===cid) l.el.classList.add('hl');
+    else l.el.classList.add('dim');
+  });
+  Object.entries(uniNodes).forEach(([id,n])=>{if(!relUnis.includes(id))n.classList.add('dim');else n.classList.add('active');});
+  Object.entries(corpNodes).forEach(([id,n])=>{if(id!==cid)n.classList.add('dim');});
+  openCorpDetail(cid);
+}
+
+function openUni(uid){
+  hideHint();clearHL();
+  const u=UNIS.find(x=>x.id===uid);
+  uniNodes[uid].classList.add('active');
+  transNodes[u.transfer].classList.add('active');
+  const relCorps=u.corps;
+  allLinks.forEach(l=>{
+    if(l.type==='hub-trans'&&l.transfer===u.transfer) l.el.classList.add('hl');
+    else if(l.type==='trans-uni'&&l.uni===uid) l.el.classList.add('hl');
+    else if(l.type==='uni-corp'&&l.uni===uid) l.el.classList.add('hl');
+    else l.el.classList.add('dim');
+  });
+  Object.entries(uniNodes).forEach(([id,n])=>{if(id!==uid)n.classList.add('dim');});
+  Object.entries(corpNodes).forEach(([id,n])=>{if(!relCorps.includes(id))n.classList.add('dim');else n.classList.add('active');});
+  openUniDetail(u);
+}
+
+/* ============ DETAIL PANEL ============ */
+const panel=document.getElementById('rightPanel');
+const detail=document.getElementById('detail');
+
+function openUniDetail(u){
+  const isTop=u.tier==='상위권';
+  const tierColor=isTop?lineColor('sinbundang'):cssVar('--accent');
+  const corpHtml=u.corps.map(cid=>{
+    const c=CORPS[cid];
+    return `<div class="corp-item" onclick="focusCorp('${cid}')">
+      <span class="cdot" style="background:${lineColor(c.line)}"></span>
+      <div class="cinfo"><div class="cn">${c.name}</div><div class="cc">${c.companies}</div></div></div>`;
+  }).join('');
+  detail.innerHTML=`
+    <button class="close" onclick="closePanel()">✕</button>
+    <span class="d-tier" style="background:${tierColor}22;color:${tierColor};">${isTop?'★ 상위권 그룹':'거점·연계 그룹'}</span>
+    <div class="d-name">${u.name}</div>
+    <div class="d-loc"><span>📍 ${u.region}</span><span style="color:${lineColor(u.line)};font-weight:800">● ${u.station}</span></div>
+    <div class="d-block">
+      <h4>🚇 수원시청역 기준 대중교통 경로</h4>
+      <div class="route-line"><span class="via">${u.via.replace(/→/g,'<span style="color:var(--accent)">→</span>')}</span>
+        <div style="margin-top:9px"><span class="timepill">예상 소요 ${u.time}</span></div></div>
+    </div>
+    <div class="d-block">
+      <h4>🎯 타깃 주요 학과</h4>
+      <div class="chips">${u.majors.map(m=>`<span class="chip major">${m}</span>`).join('')}</div>
+    </div>
+    <div class="d-block">
+      <h4>🏢 연계 추천 기업 클러스터 (진로)</h4>
+      ${corpHtml}
+    </div>
+    <div class="d-block" style="font-size:11px;color:var(--text-faint);line-height:1.6">
+      * 소요시간은 환승·배차를 고려한 개략적 추정치이며 실제와 차이가 있을 수 있습니다.
+    </div>`;
+  panel.classList.add('open');
+}
+
+function openCorpDetail(cid){
+  const c=CORPS[cid];
+  const relUnis=UNIS.filter(u=>u.corps.includes(cid));
+  detail.innerHTML=`
+    <button class="close" onclick="closePanel()">✕</button>
+    <span class="d-tier" style="background:${lineColor(c.line)}22;color:${lineColor(c.line)};">🏢 기업 클러스터</span>
+    <div class="d-name">${c.name}</div>
+    <div class="d-loc"><span style="color:${lineColor(c.line)};font-weight:800">● ${c.station}</span></div>
+    <div class="d-block"><h4>📌 분야</h4><div class="chips"><span class="chip">${c.field}</span></div></div>
+    <div class="d-block"><h4>🏢 주요 기업</h4>
+      <div class="route-line">${c.companies}</div></div>
+    <div class="d-block"><h4>🎓 진로 연계 대학</h4>
+      ${relUnis.map(u=>`<div class="corp-item" onclick="openUni('${u.id}')">
+        <span class="cdot" style="background:${lineColor(u.line)}"></span>
+        <div class="cinfo"><div class="cn">${u.name}</div><div class="cc">${u.majors.join(' · ')}</div></div></div>`).join('')}
+    </div>`;
+  panel.classList.add('open');
+}
+
+function closePanel(){panel.classList.remove('open');clearHL();}
+
+/* ============ THEME ============ */
+const html=document.documentElement;
+const tBtn=document.getElementById('themeToggle');
+tBtn.onclick=()=>{
+  const cur=html.getAttribute('data-theme')==='light'?'':'light';
+  if(cur==='light'){html.setAttribute('data-theme','light');
+    document.getElementById('themeIcon').textContent='🌙';
+    document.getElementById('themeLabel').textContent='다크 모드';}
+  else{html.removeAttribute('data-theme');
+    document.getElementById('themeIcon').textContent='☀️';
+    document.getElementById('themeLabel').textContent='라이트 모드';}
+  // recolor svg strokes that used css vars snapshot
+  recolor();
+};
+function recolor(){
+  allLinks.forEach(l=>{
+    if(l.type==='hub-trans') l.el.setAttribute('stroke',lineColor('suin'));
+    else if(l.type==='trans-uni'){const u=UNIS.find(x=>x.id===l.uni);l.el.setAttribute('stroke',lineColor(u.line));}
+    else l.el.setAttribute('stroke',cssVar('--career'));
+  });
+}
+</script>
+</body>
+</html>
